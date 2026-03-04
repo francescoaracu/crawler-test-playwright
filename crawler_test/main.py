@@ -9,6 +9,7 @@ async def load_urls_from_csv(file_path: str) -> list[str]:
     urls = []  
     with open(file_path, 'r') as file:  
         reader = csv.reader(file)  
+        next(reader)  # Skip header row
         for row in reader:  
             if row and row[0].strip():  # Skip empty rows  
                 urls.append(row[0].strip())  # In the dataset, URL is in first column, so take only that element  
@@ -16,7 +17,8 @@ async def load_urls_from_csv(file_path: str) -> list[str]:
 
 async def main() -> None:
     """The main function."""
-    urls = await load_urls_from_csv('lists/202601.csv')  # Load URLs from CSV file
+    urls = await load_urls_from_csv('./crawler_test/lists/202601.csv')  # Load URLs from CSV file
+    print(urls[0])
     request_list = RequestList(urls)
 
     tandem = await RequestList.to_tandem(request_list)  # Convert RequestList to RequestManagerTandem
@@ -30,3 +32,4 @@ async def main() -> None:
     )
 
     await crawler.run()
+
