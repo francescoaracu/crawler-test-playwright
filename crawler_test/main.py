@@ -1,5 +1,6 @@
 import csv
-from turtle import ht
+from datetime import timedelta
+from crawlee.browsers import BrowserPool
 from crawlee.crawlers import PlaywrightCrawler
 from crawlee.request_loaders import RequestList, RequestManagerTandem
 from .routes import router
@@ -18,13 +19,14 @@ async def load_urls_from_csv(file_path: str) -> list[str]:
 async def main() -> None:
     """The main function."""
     urls = await load_urls_from_csv('./crawler_test/lists/202601.csv')  # Load URLs from CSV file
-    print(urls[0])
     request_list = RequestList(urls)
 
     tandem = await RequestList.to_tandem(request_list)  # Convert RequestList to RequestManagerTandem
+    browser_pool = BrowserPool(operation_timeout=timedelta(seconds=180))
 
     """The crawler entry point."""
     crawler = PlaywrightCrawler(
+        browser_pool=browser_pool,
         request_handler=router,
         request_manager=tandem,  # Use the RequestManagerTandem for managing requests
         max_crawl_depth=1, # necessary to limit crawling only to the link(s) fetched from the main URL
