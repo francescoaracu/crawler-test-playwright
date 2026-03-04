@@ -1,1 +1,2 @@
-storage
+storage/
+crawler_test/__pycache__/
