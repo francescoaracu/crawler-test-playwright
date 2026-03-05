@@ -4,27 +4,25 @@
 FROM apify/actor-python-playwright:3.13
 RUN apt update && apt install -yq git && rm -rf /var/lib/apt/lists/*
 
-RUN pip install -U pip setuptools \
-    && pip install 'uv<1'
+RUN pip install -U pip setuptools
 
-ENV UV_PROJECT_ENVIRONMENT="/usr/local"
+# Second, copy just requirements.txt into the Actor image,
+# since it should be the only file that affects the dependency install in the next step,
+# in order to speed up the build
+COPY requirements.txt ./
 
-COPY pyproject.toml uv.lock ./
-
+# Install the dependencies
 RUN echo "Python version:" \
-    && python --version \
-    && echo "Installing dependencies:" \
-    # Check if playwright is already installed
-    && PLAYWRIGHT_INSTALLED=$(pip freeze | grep -q playwright && echo "true" || echo "false") \
-    && if [ "$PLAYWRIGHT_INSTALLED" = "true" ]; then \
-        echo "Playwright already installed, excluding from uv sync" \
-        && uv sync --frozen --no-install-project --no-editable -q --no-dev --inexact --no-install-package playwright; \
-    else \
-        echo "Playwright not found, installing all dependencies" \
-        && uv sync --frozen --no-install-project --no-editable -q --no-dev --inexact; \
-    fi \
-    && echo "All installed Python packages:" \
-    && pip freeze
+ && python --version \
+ && echo "Installing dependencies:" \
+ # Install everything using pip, set playwright version so that it matches whatever is pre-installed in the image
+ && cat requirements.txt | \
+ # Replace playwright version so that it matches whatever is pre-installed in the image (the `hash` checks if playwright is installed)
+    sed "s/^playwright==\(.*\)/playwright==$(hash playwright 2>/dev/null && (playwright --version | cut -d ' ' -f 2) || echo '\1')/" | \
+ # Install everything using pip
+    pip install -r /dev/stdin \
+ && echo "All installed Python packages:" \
+ && pip freeze
 # Next, copy the remaining files and directories with the source code.
 # Since we do this after installing the dependencies, quick build will be really fast
 # for most source file changes.
@@ -34,4 +32,4 @@ COPY . ./
 RUN python -m compileall -q .
 
 # Specify how to launch the source code of your Actor.
-CMD ["python", "-m", "crawler_test"]
+CMD ["python", "-m", "crawler_playwright"]

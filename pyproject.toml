@@ -11,8 +11,3 @@ dependencies = [
     "crawlee[playwright]",
 ]
 
-[dependency-groups]
-dev = [
-    "ty>=0.0.18",
-]
-
