@@ -1,8 +1,7 @@
 import asyncio
 import csv
 from crawlee.crawlers import PlaywrightCrawler
-from crawlee.http_clients import ImpitHttpClient
-from crawlee.request_loaders import RequestList, RequestManagerTandem
+from crawlee.request_loaders import RequestList
 from .routes import router
 
 async def load_urls_from_csv(file_path: str):  
@@ -34,7 +33,7 @@ async def main() -> None:
         browser_type='chromium',
         max_crawl_depth=1, # necessary to limit crawling only to the link(s) fetched from the main URL
         max_requests_per_crawl=1000, # test limit
-        http_client=ImpitHttpClient(),
+        use_incognito_pages=True,
     )
 
     await crawler.run()
