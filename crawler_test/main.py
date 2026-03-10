@@ -31,6 +31,7 @@ async def main() -> None:
         request_manager=request_manager,  # Use the RequestManagerTandem for managing requests
         headless=True,
         browser_type='chromium',
+        browser_launch_options={'chromium_sandbox': False},
         max_crawl_depth=1, # necessary to limit crawling only to the link(s) fetched from the main URL
         max_requests_per_crawl=1000, # test limit
         use_incognito_pages=True,
