@@ -2,6 +2,7 @@
 # You can see the Docker images from Apify at https://hub.docker.com/r/apify/.
 # You can also use any other image from Docker Hub.
 FROM apify/actor-python-playwright:3.13
+
 RUN apt update && apt install -yq git && rm -rf /var/lib/apt/lists/*
 
 RUN pip install -U pip setuptools
@@ -30,6 +31,8 @@ COPY . ./
 
 # Use compileall to ensure the runnability of the Actor Python code.
 RUN python -m compileall -q .
+
+WORKDIR /crawler_run
 
 # Specify how to launch the source code of your Actor.
 CMD ["python", "-m", "crawler_test"]
