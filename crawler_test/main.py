@@ -32,6 +32,7 @@ async def main() -> None:
     )
 
     concurrency = ConcurrencySettings(
+        desired_concurrency=25,
         max_concurrency=50,
     )
 
