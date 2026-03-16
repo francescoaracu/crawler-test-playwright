@@ -1,22 +1,22 @@
 # crawler-playwright
 
-## Run With Docker (With Persistent Data)
+# Run With Docker (With Persistent Data)
 
 The repository includes a `docker-compose.yml` that mounts `./storage` from your host into the container at `/usr/src/app/storage`.
 This means generated Crawlee data is available on your machine after the run.
 
-# Option 1: Build and run
+## Option 1: Build and run
 
 ```sh
 docker compose up --build
 ```
 
-# Option 2: Run once and stop when complete
+## Option 2: Run once and stop when complete
 
 ```sh
 docker compose run --rm crawler
 ```
-# Access data
+## Access data
 
 Generated data will be available in:
 
@@ -24,7 +24,7 @@ Generated data will be available in:
 - `storage/key_value_stores/`
 - `storage/request_queues/`
 
-# Interrupt operations
+## Interrupt operations
 
 Stop and remove the service container:
 
@@ -32,7 +32,7 @@ Stop and remove the service container:
 docker compose down
 ```
 
-## Run locally (with python and pip)
+# Run locally (with python and pip)
 
 To install dependencies, your can run the following command:
 
